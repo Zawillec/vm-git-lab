@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vm-git-lab-proxy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: vm-git-lab-proxy
+  template:
+    metadata:
+      labels:
+        app: vm-git-lab-proxy
+    spec:
+      containers:
+        - name: proxy
+          image: nginx:alpine
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: nginx-config
+              mountPath: /etc/nginx/conf.d/default.conf
+              subPath: default.conf
+              readOnly: true
+      volumes:
+        - name: nginx-config
+          configMap:
+            name: vm-git-lab-proxy-config
